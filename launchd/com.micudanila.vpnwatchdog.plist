@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  LaunchDaemon manifest for the VPN watchdog.
+
+  Drop a rendered copy at:
+      /Library/LaunchDaemons/com.micudanila.vpnwatchdog.plist
+
+  Then load it:
+      sudo launchctl bootstrap system /Library/LaunchDaemons/com.micudanila.vpnwatchdog.plist
+      sudo launchctl enable    system/com.micudanila.vpnwatchdog
+      sudo launchctl kickstart -k system/com.micudanila.vpnwatchdog
+
+  __PROJECT_DIR__ and __PYTHON_BIN__ are placeholders — the install
+  script (`scripts/install_daemon.sh`) substitutes them with the absolute
+  paths of this checkout, so I never have to hand-edit this file.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.micudanila.vpnwatchdog</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__PYTHON_BIN__</string>
+        <string>-m</string>
+        <string>daemon.watchdog</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__PROJECT_DIR__</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
+    <!--
+      RunAtLoad=false:  do not start automatically when launchd loads
+                        this plist (i.e. not at boot, not at install).
+      KeepAlive=false:  if the daemon exits or is killed, leave it
+                        dead. The user starts it back up explicitly.
+
+      To start it manually:
+          sudo launchctl kickstart system/com.micudanila.vpnwatchdog
+      To stop it:
+          sudo launchctl kill TERM system/com.micudanila.vpnwatchdog
+      To remove it entirely:
+          sudo ./scripts/uninstall_daemon.sh
+    -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>KeepAlive</key>
+    <false/>
+
+    <!--
+      Floor on time between launches. Only matters if the daemon is
+      manually re-kickstarted; with KeepAlive=false launchd won't be
+      respawning it on its own.
+    -->
+    <key>ThrottleInterval</key>
+    <integer>300</integer>
+
+    <key>StandardOutPath</key>
+    <string>/var/log/vpn_watchdog.stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/var/log/vpn_watchdog.stderr.log</string>
+</dict>
+</plist>

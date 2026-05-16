@@ -1,0 +1,13 @@
+# Optional: lets your normal user run wg / wg-quick without typing a
+# password. Only needed during development (`python -m daemon.watchdog`).
+# When the daemon runs through launchd it's already root and this file
+# isn't required.
+#
+# Install:
+#   1. Replace USERNAME with your account name.
+#   2. sudo visudo -f /etc/sudoers.d/vpn_watchdog
+#   3. Paste the lines below and save.
+
+USERNAME ALL=(root) NOPASSWD: /opt/homebrew/bin/wg show *
+USERNAME ALL=(root) NOPASSWD: /opt/homebrew/bin/wg-quick down *
+USERNAME ALL=(root) NOPASSWD: /opt/homebrew/bin/wg-quick up *

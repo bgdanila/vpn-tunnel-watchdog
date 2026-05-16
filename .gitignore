@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+
+# Virtual env
+.venv/
+venv/
+env/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Vercel
+.vercel/
+
+# Local watchdog state
+state.json
+local_logs/
+
+# But the bundled demo data must be tracked (Vercel reads it).
+!sample_data/
+!sample_data/**

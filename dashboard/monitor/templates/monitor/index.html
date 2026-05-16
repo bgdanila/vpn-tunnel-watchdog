@@ -1,0 +1,136 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>VPN Status Watchdog</title>
+    <link rel="stylesheet" href="{% static 'monitor/css/style.css' %}" />
+    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%231d4ed8'/><path d='M20 34l8 8 16-18' stroke='white' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <span class="logo"></span>
+            <div>
+                <h1>VPN Status Watchdog</h1>
+                <p>WireGuard health monitor &middot; macOS launchd daemon</p>
+            </div>
+        </div>
+        <div class="topbar-meta">
+            {% if payload.demo %}<span class="badge badge-demo">DEMO MODE</span>{% endif %}
+            <span class="badge" id="last-update">updated just now</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- 1. AT-A-GLANCE HERO -->
+        <section class="hero card status-{{ payload.color }}" id="hero">
+            <div class="hero-light">
+                <span class="light light-red"   data-color="red"></span>
+                <span class="light light-yellow" data-color="yellow"></span>
+                <span class="light light-green"  data-color="green"></span>
+            </div>
+            <div class="hero-text">
+                <p class="eyebrow">Tunnel status</p>
+                <h2 id="status-label">{{ payload.status }}</h2>
+                <p class="hero-sub">
+                    <span id="status-sub">
+                        {% if payload.status == "HEALTHY" %}Interface up &middot; recent handshake.
+                        {% elif payload.status == "STALLED" %}Interface up but handshake is stale.
+                        {% elif payload.status == "DEAD" %}Interface missing &middot; restart pending.
+                        {% elif payload.status == "UNAVAILABLE" %}WireGuard tools not installed on this host.
+                        {% else %}Awaiting first probe.{% endif %}
+                    </span>
+                </p>
+            </div>
+            <div class="hero-ip">
+                <p class="eyebrow">VPN IP</p>
+                <h3 id="vpn-ip">{{ payload.vpn_ip|default:"—" }}</h3>
+                <p class="hero-iface">on <code id="iface-name">{{ payload.interface_name|default:"utun?" }}</code></p>
+            </div>
+        </section>
+
+        <!-- 2. TELEMETRY -->
+        <section class="grid grid-3">
+            <article class="card metric">
+                <p class="eyebrow">Time since last handshake</p>
+                <h3 class="metric-value">
+                    <span id="handshake-counter">{{ payload.handshake_human }}</span>
+                </h3>
+                <p class="metric-foot" id="handshake-foot">
+                    healthy ≤ {{ payload.thresholds.healthy|default:120 }}s
+                    &middot; stalled ≥ {{ payload.thresholds.stalled|default:180 }}s
+                </p>
+            </article>
+
+            <article class="card metric">
+                <p class="eyebrow">Tunnel uptime</p>
+                <h3 class="metric-value" id="uptime-value">{{ payload.uptime_human }}</h3>
+                <p class="metric-foot">since last successful bring-up</p>
+            </article>
+
+            <article class="card metric metric-accent">
+                <p class="eyebrow">Watchdog interventions today</p>
+                <h3 class="metric-value" id="interventions-value">{{ payload.interventions_today }}</h3>
+                <p class="metric-foot">auto wg-quick down/up cycles</p>
+            </article>
+        </section>
+
+        <!-- 3 + 4. ACTION LOG + OS FLEX -->
+        <section class="grid grid-2">
+            <article class="card terminal-card">
+                <header class="card-header">
+                    <h4>Watchdog action log</h4>
+                    <span class="dot-row"><span></span><span></span><span></span></span>
+                </header>
+                <pre class="terminal" id="terminal">{% for line in payload.log_lines %}{{ line }}
+{% empty %}No log entries yet — start the daemon with `python -m daemon.watchdog`.
+{% endfor %}</pre>
+            </article>
+
+            <article class="card">
+                <header class="card-header">
+                    <h4>Process &amp; interface telemetry</h4>
+                </header>
+                <dl class="kv">
+                    <dt>WireGuard PIDs</dt>
+                    <dd id="wg-pids">
+                        {% if payload.wg_pids %}{{ payload.wg_pids|join:", " }}{% else %}<span class="muted">none detected</span>{% endif %}
+                    </dd>
+
+                    <dt>RX (bytes received)</dt>
+                    <dd><span id="rx-human">{{ payload.rx_human }}</span></dd>
+
+                    <dt>TX (bytes sent)</dt>
+                    <dd><span id="tx-human">{{ payload.tx_human }}</span></dd>
+
+                    <dt>Peer endpoint</dt>
+                    <dd id="peer-endpoint">{{ payload.peer_endpoint|default:"—" }}</dd>
+
+                    <dt>Peer pubkey</dt>
+                    <dd class="mono small" id="peer-pubkey">{{ payload.peer_pubkey|default:"—" }}</dd>
+
+                    <dt>Probe interval</dt>
+                    <dd>{{ payload.thresholds.interval|default:60 }}s</dd>
+
+                    <dt>Config file</dt>
+                    <dd class="mono small">{{ payload.wg_conf|default:"—" }}</dd>
+                </dl>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <p>OS 2 project &middot; Micu / Danila &middot; dashboard polls every 15s</p>
+    </footer>
+
+    <script id="bootstrap-data" type="application/json">{{ payload|safe }}</script>
+    <script>
+        window.__BOOTSTRAP__ = {
+            handshake_seconds: {{ payload.handshake_seconds|default:"null" }},
+            generated_at: {{ payload.generated_at|default:0 }}
+        };
+    </script>
+    <script src="{% static 'monitor/js/app.js' %}" defer></script>
+</body>
+</html>

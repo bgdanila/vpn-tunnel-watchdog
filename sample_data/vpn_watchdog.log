@@ -1,0 +1,22 @@
+[2026-04-19 09:55:02] INFO Probe: utun3 active. Handshake: 18s ago. Status: HEALTHY.
+[2026-04-19 09:56:02] INFO Probe: utun3 active. Handshake: 32s ago. Status: HEALTHY.
+[2026-04-19 09:57:02] INFO Probe: utun3 active. Handshake: 45s ago. Status: HEALTHY.
+[2026-04-19 09:58:02] INFO Probe: utun3 active. Handshake: 91s ago. Status: HEALTHY.
+[2026-04-19 09:59:02] INFO Probe: utun3 active. Handshake: 152s ago. Status: HEALTHY.
+[2026-04-19 10:00:02] INFO Probe: utun3 active. Handshake: 213s ago. Status: STALLED.
+[2026-04-19 10:00:02] WARNING Action: tunnel STALLED -> executing wg-quick down/up cycle on /usr/local/etc/wireguard/wg0.conf
+[2026-04-19 10:00:03] INFO Action: down -> rc=0 [#] wg showconf utun3
+[2026-04-19 10:00:05] INFO Action: up -> rc=0 [#] wireguard-go utun3
+[2026-04-19 10:00:05] INFO State change: STALLED -> HEALTHY
+[2026-04-19 10:01:05] INFO Probe: utun3 active. Handshake: 4s ago. Status: HEALTHY.
+[2026-04-19 10:02:05] INFO Probe: utun3 active. Handshake: 19s ago. Status: HEALTHY.
+[2026-04-19 10:15:02] INFO Probe: utun3 missing. Handshake: never. Status: DEAD.
+[2026-04-19 10:15:02] WARNING Action: tunnel DEAD -> executing wg-quick down/up cycle on /usr/local/etc/wireguard/wg0.conf
+[2026-04-19 10:15:03] INFO Action: down -> rc=0 ok
+[2026-04-19 10:15:05] INFO Action: up -> rc=0 ok
+[2026-04-19 10:15:05] INFO State change: DEAD -> HEALTHY
+[2026-04-19 10:16:05] INFO Probe: utun3 active. Handshake: 3s ago. Status: HEALTHY.
+[2026-04-19 10:17:05] INFO Probe: utun3 active. Handshake: 12s ago. Status: HEALTHY.
+[2026-04-19 10:18:05] INFO Probe: utun3 active. Handshake: 24s ago. Status: HEALTHY.
+[2026-04-19 10:19:05] INFO Probe: utun3 active. Handshake: 41s ago. Status: HEALTHY.
+[2026-04-19 10:20:05] INFO Probe: utun3 active. Handshake: 58s ago. Status: HEALTHY.

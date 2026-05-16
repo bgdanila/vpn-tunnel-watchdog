@@ -1,0 +1,45 @@
+{
+  "status": "HEALTHY",
+  "color": "green",
+  "interventions_today": 2,
+  "uptime_seconds": 9325,
+  "wg_interface": "utun3",
+  "wg_conf": "/usr/local/etc/wireguard/wg0.conf",
+  "thresholds": {
+    "healthy": 120,
+    "stalled": 180,
+    "interval": 60
+  },
+  "snapshot": {
+    "ts": 1745067002,
+    "interface": {
+      "name": "utun3",
+      "exists": true,
+      "is_up": true,
+      "inet": "10.66.66.2",
+      "rx_bytes": 53421120,
+      "tx_bytes": 12895744
+    },
+    "handshake": {
+      "interface_listed": true,
+      "seconds_since_handshake": 12,
+      "peer_endpoint": "203.0.113.42:51820",
+      "peer_pubkey": "Hk1aZ4lUv6gQK0v8q5tQ3yXZ7mJ8/pBmYxNwo7n2hVc=",
+      "transfer_rx": 53421120,
+      "transfer_tx": 12895744
+    },
+    "processes": {
+      "pids": [482, 511, 4129],
+      "rows": [
+        "  482 wireguard-go     /opt/homebrew/bin/wireguard-go utun3",
+        "  511 wg-quick         /opt/homebrew/bin/bash /opt/homebrew/bin/wg-quick up wg0",
+        " 4129 wg               /opt/homebrew/bin/wg show"
+      ]
+    }
+  },
+  "recent_interventions": [
+    { "ts": 1745059102, "reason": "STALLED", "result": "ok" },
+    { "ts": 1745042311, "reason": "DEAD", "result": "ok" }
+  ],
+  "written_at": 1745067002
+}
